@@ -1,5 +1,8 @@
 package com.example;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -7,9 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
 
-import com.example.model.CompositeKeys.Employee;
-import com.example.model.CompositeKeys.EmployeeIdentity;
+import com.example.model.elementCollection.Child;
+import com.example.model.elementCollection.ChildAddress;
 import com.example.repository.BeerRepository;
+import com.example.repository.ChildRepository;
 import com.example.repository.EmployeeRepository;
 import com.example.repository.PostM2MRepository;
 import com.example.repository.StudentRepository;
@@ -47,6 +51,9 @@ class BeerCmdRunner implements CommandLineRunner{
     
     @Autowired
     EmployeeRepository employeeRepository;
+    
+    @Autowired
+    ChildRepository userRepository;
 	
 	public BeerCmdRunner(BeerRepository repository) {
 		this.repository = repository;
@@ -134,7 +141,26 @@ class BeerCmdRunner implements CommandLineRunner{
 
         employeeRepository.save(employee);*/
 		
-		System.out.println(employeeRepository.findById(new EmployeeIdentity("E-123", "D-457")).toString());
-		System.out.println(employeeRepository.findByEmployeeIdentityCompanyId("D-457").toString());
+		/*System.out.println(employeeRepository.findById(new EmployeeIdentity("E-123", "D-457")));
+		System.out.println(employeeRepository.findByEmployeeIdentityCompanyId("D-457"));*/
+		
+        // Cleanup database tables.
+        userRepository.deleteAll();
+
+        // Insert a user with multiple phone numbers and addresses.
+        Set<String> phoneNumbers = new HashSet<>();
+        phoneNumbers.add("+91-9999999999");
+        phoneNumbers.add("+91-9898989898");
+
+        Set<ChildAddress> addresses = new HashSet<>();
+        addresses.add(new ChildAddress("747", "Golf View Road", "Bangalore",
+                "Karnataka", "India", "560008"));
+        addresses.add(new ChildAddress("Plot No 44", "Electronic City", "Bangalore",
+                "Karnataka", "India", "560001"));
+
+        Child user = new Child("Rajeev Kumar Singh", "rajeev@callicoder.com",
+                phoneNumbers, addresses);
+
+        userRepository.save(user);
 	}
 }
