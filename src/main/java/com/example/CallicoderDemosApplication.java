@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
 
-import com.example.model.embeddable.Address;
-import com.example.model.embeddable.Name;
-import com.example.model.embeddable.Student;
+import com.example.model.CompositeKeys.Employee;
+import com.example.model.CompositeKeys.EmployeeIdentity;
 import com.example.repository.BeerRepository;
+import com.example.repository.EmployeeRepository;
 import com.example.repository.PostM2MRepository;
 import com.example.repository.StudentRepository;
 import com.example.repository.TagRepository;
@@ -44,6 +44,9 @@ class BeerCmdRunner implements CommandLineRunner{
     
     @Autowired
     private StudentRepository studentRepo;
+    
+    @Autowired
+    EmployeeRepository employeeRepository;
 	
 	public BeerCmdRunner(BeerRepository repository) {
 		this.repository = repository;
@@ -110,7 +113,7 @@ class BeerCmdRunner implements CommandLineRunner{
 
         postRepository.save(post);*/
 		
-		studentRepo.deleteAllInBatch();
+		/*studentRepo.deleteAllInBatch();
 
         // Insert a new user in the database
         Name name = new Name("Rajeev", "Kumar", "Singh");
@@ -118,6 +121,20 @@ class BeerCmdRunner implements CommandLineRunner{
         Student stu = new Student(name, "rajeev@callicoder.com", address);
 
         studentRepo.save(stu);
-	
+	*/
+		
+		  // Cleanup employees table
+        /*employeeRepository.deleteAllInBatch();
+
+        // Insert a new Employee in the database
+        Employee employee = new Employee(new EmployeeIdentity("E-123", "D-457"),
+                "Rajeev Kumar Singh",
+                "rajeev@callicoder.com",
+                "+91-9999999999");
+
+        employeeRepository.save(employee);*/
+		
+		System.out.println(employeeRepository.findById(new EmployeeIdentity("E-123", "D-457")).toString());
+		System.out.println(employeeRepository.findByEmployeeIdentityCompanyId("D-457").toString());
 	}
 }
